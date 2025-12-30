@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/healthz", "/error").permitAll()
                         .requestMatchers("/healthz").permitAll()
                         .requestMatchers("/api/patients/**").authenticated() // Allow all authenticated for now,
                                                                              // fine-tune later
