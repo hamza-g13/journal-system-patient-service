@@ -57,7 +57,7 @@ jobs:
       - name: Trigger Redeploy in KTH Cloud
         run: |
           # ID för patient-service som du hämtade tidigare
-          curl -X POST "https://api.cloud.cbh.kth.se/deploy/v2/deployments/082abef1-76a3-4c7a-9782-a3828e50b58c/command" \
+          curl -X POST "https://api.cloud.cbh.kth.se/deploy/v2/deployments/02a7b65a-6a61-41f0-9577-ce687cde0989/command" \
           -H "X-Api-Key: ${{ secrets.KTH_CLOUD_API_KEY }}" \
           -H "Content-Type: application/json" \
           -d '{"command": "restart"}'
