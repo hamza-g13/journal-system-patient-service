@@ -24,7 +24,6 @@ jobs:
 
   build-and-deploy:
     needs: test
-    # Körs bara om vi pushar till main (inte på pull requests)
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -55,17 +54,10 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/patient-service:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/patient-service:latest
 
-      # Hämtar din KUBECONFIG secret och gör den redo för kubectl
-      - name: Setup Kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-
-      - name: Deploy to KTH Cloud
+      - name: Trigger Redeploy in KTH Cloud
         run: |
-          # Uppdatera deployment med den nya imagen
-          kubectl set image deployment/patient-service patient-service=${{ secrets.DOCKERHUB_USERNAME }}/patient-service:latest -n journal-system
-          
-          # Vänta på att den nya versionen startar upp helt (så vi ser om den kraschar)
-          kubectl rollout status deployment/patient-service -n journal-system
+          # ID för patient-service som du hämtade tidigare
+          curl -X POST "https://api.cloud.cbh.kth.se/deploy/v2/deployments/082abef1-76a3-4c7a-9782-a3828e50b58c/command" \
+          -H "X-Api-Key: ${{ secrets.KTH_CLOUD_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{"command": "restart"}'
