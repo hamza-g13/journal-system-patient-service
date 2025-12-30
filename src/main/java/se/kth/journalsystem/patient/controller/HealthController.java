@@ -1,4 +1,4 @@
-package se.kth.journalsystem.auth.controller;
+package se.kth.journalsystem.patient.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
