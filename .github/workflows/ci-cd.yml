@@ -11,15 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
-      - name: Run Unit Tests
+      - name: Run Tests
         run: mvn test
 
   build-and-deploy:
@@ -28,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -36,7 +33,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build Application
+      - name: Build with Maven
         run: mvn clean package -DskipTests
 
       - name: Login to Docker Hub
@@ -51,13 +48,12 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/patient-service:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/patient-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/journal-system-patient-service:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/journal-system-patient-service:latest
 
       - name: Trigger Redeploy in KTH Cloud
         run: |
-          # ID för patient-service som du hämtade tidigare
           curl -X POST "https://api.cloud.cbh.kth.se/deploy/v2/deployments/02a7b65a-6a61-41f0-9577-ce687cde0989/command" \
-          -H "X-Api-Key: ${{ secrets.KTH_CLOUD_API_KEY }}" \
-          -H "Content-Type: application/json" \
-          -d '{"command": "restart"}'
+            -H "X-Api-Key: ${{ secrets.KTH_CLOUD_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"command": "restart"}'
