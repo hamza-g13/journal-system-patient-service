@@ -1,3 +1,8 @@
 package se.kth.journalsystem.patient.model.enums;
 
-DOCTOR,NURSE,RECEPTIONIST,STAFF}
+public enum PractitionerType {
+    DOCTOR,
+    NURSE,
+    RECEPTIONIST,
+    STAFF
+}
